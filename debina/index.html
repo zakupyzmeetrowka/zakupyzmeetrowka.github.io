@@ -611,9 +611,9 @@ $('#discard').onclick=()=>{ss.del('zw-draft');DATA=JSON.parse(ORIG);dirty=false;
 $('#addSec').onclick=()=>openSection(null);
 $('#editImp').onclick=()=>openImportant();
 render();
-// wersja na GitHub Pages: najnowsze dane listy z pliku data/<lista>.json (ten sam, który zapisuje aplikacja)
+// wersja na GitHub Pages: najnowsze dane listy prosto z repo (GitHub API, bez czekania na publikację Pages); zapas: data/<lista>.json
 (async()=>{const m=location.pathname.match(/\/([a-z0-9-]+)\/?$/);if(!m||!/github\.io$/.test(location.hostname))return;
-  try{const r=await fetch('../data/'+m[1]+'.json?t='+Date.now(),{cache:'no-store'});if(!r.ok)return;const j=await r.json();
+  try{const api='https://api.github.com/repos/zakupyzmeetrowka/zakupyzmeetrowka.github.io/contents/data/'+m[1]+'.json?t='+Date.now();let r=null;try{r=await fetch(api,{headers:{Accept:'application/vnd.github.raw'},cache:'no-store'})}catch(e){}if(!r||!r.ok)r=await fetch('../data/'+m[1]+'.json?t='+Date.now(),{cache:'no-store'});if(!r.ok)return;const j=await r.json();
     if(j&&j.sections){DATA={name:j.name||DATA.name,date:j.date||DATA.date,important:j.important??DATA.important,hero:j.hero||DATA.hero,sections:j.sections};render()}}catch(e){}})();
 if(ss.get('zw-saved')){ss.del('zw-saved');setTimeout(()=>toast('Zapisano. Klient widzi już nową wersję.'),300)}
 if(!(window.claude&&claude.use)){
